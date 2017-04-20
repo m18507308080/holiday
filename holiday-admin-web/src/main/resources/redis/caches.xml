@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:p="http://cxf.apache.org/policy" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+   	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+   	http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://cxf.apache.org/bindings/soap http://cxf.apache.org/schemas/configuration/soap.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+   	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+	<!-- spring redis 配置 -->
+
+	<!-- define pool info here. -->
+	<bean id="poolConfig" class="com.nothin.onolisa.framework.redis.config.spring.PoolConfig">
+		<property name="maxIdle" value="30" />
+		<property name="minIdle" value="30" />
+		<property name="testOnBorrow" value="true" />
+		
+	</bean>
+
+	<!-- 配置server信息 -->
+	<bean id="server1" class="com.nothin.onolisa.framework.redis.shard.NodeInfo4Jedis">
+		<property name="ip" value="127.0.0.1" />
+		<property name="port" value="6379" />
+		<property name="password" value="" />
+		<property name="timeOut" value="2000" />
+		<property name="dbIndex" value="0" />
+	</bean>
+
+	<!-- 配置shard信息 -->
+	<bean id="shard1" class="com.nothin.onolisa.framework.redis.shard.ShardInfo4Jedis">
+		<property name="shardName" value="shard1" />
+		<property name="nodes">
+			<set>
+				<ref bean="server1" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- 配置shard组合信息 -->
+	<bean id="shardConfig" class="com.nothin.onolisa.framework.redis.config.spring.ShardConfig">
+		<property name="shardConfigName" value="config1" />
+		<property name="shards">
+			<list>
+				<ref bean="shard1" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="configManager4Spring"
+		class="com.nothin.onolisa.framework.redis.config.spring.ConfigManager4Spring">
+		<property name="poolConfig" ref="poolConfig" />
+		<property name="shardConfig" ref="shardConfig" />
+	</bean>
+
+	<bean id="springRedisClient"
+		class="com.nothin.onolisa.framework.redis.client.impl.spring.SpringRedisClientImpl"
+		init-method="init">
+		<property name="configManager4Spring" ref="configManager4Spring" />
+	</bean>
+
+</beans>

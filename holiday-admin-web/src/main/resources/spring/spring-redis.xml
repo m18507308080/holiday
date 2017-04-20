@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:cache="http://www.springframework.org/schema/cache" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+	<!-- import redis cache configuration -->
+	<import resource="classpath:redis/caches.xml" />
+	
+	<!-- 开启@Cacheable -->
+	
+    <bean id="cacheManager" class="com.nothin.holiday.admin.cache.CachesManager">
+    	<property name="caches">
+    		<set>
+    			<bean class="com.nothin.holiday.admin.cache.dto.AdministratorsVOCache" c:name="administratorsVOCache" c:springBinaryRedisClient-ref="springRedisClient"/>
+    		</set>
+    	</property>
+    </bean>
+    
+	<cache:annotation-driven cache-manager="cacheManager"/>
+</beans>

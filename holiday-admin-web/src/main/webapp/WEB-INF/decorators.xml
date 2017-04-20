@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/velocity/decorators">
+    <!-- 此处用来定义装饰器需要过滤的页面 -->
+    <decorator name="decorators" page="ui_main.htm">
+        <pattern>/admin/**.html</pattern>
+    </decorator>
+</decorators>

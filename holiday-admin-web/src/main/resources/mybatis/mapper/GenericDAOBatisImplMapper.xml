@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nothin.holiday.admin.dao.impl.GenericDAOBatisImplMapper">
+
+    <insert id="batchInsert" parameterType="map">
+        insert into ${table_name}
+        <foreach item="field" index="index" collection="fields" open="("
+            separator="," close=")">
+            ${field}
+        </foreach>
+        values
+        <foreach item="list" index="index" collection="values" separator=",">
+	        <foreach item="value" index="index" collection="list" open="("
+	            separator="," close=")">
+	            #{value}
+	        </foreach>        
+        </foreach>        
+    </insert>
+
+    <select id="findById" parameterType="map" resultType="map">
+        select * from ${table_name} 
+        where id=#{id} 
+    </select>
+
+    <select id="findByCode" parameterType="map" resultType="map">
+        select * from ${table_name} 
+        where code=#{code} 
+    </select>
+
+    <update id="deleteById" parameterType="map">
+        update ${table_name} set deleted=1
+        where id=#{id};
+    </update>
+
+    <update id="deleteByCode" parameterType="map">
+        update ${table_name} set deleted=1
+        where code=#{code};
+    </update>
+
+    <update id="batchDeleteByIds" parameterType="map">
+        update ${table_name} set deleted=1
+        where id in
+        <foreach item="id" index="index" collection="ids" open="("
+            separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+ 
+    <update id="updateWithMap" parameterType="map">
+	update ${table_name} set
+	<if test="fields!=null">
+		<foreach item="field" index="idx" collection="fields" separator="," >
+			<foreach collection="values" index="idv" item="value">
+			<if test="idx==idv">
+				${field}=#{value}
+			</if>
+			</foreach>
+		</foreach>
+		<if test="conditions!=null">
+		   where ${conditions}
+		</if>
+	</if>
+	</update>
+
+	<update id="updateByCode" parameterType="map">
+	update ${table_name} set
+	<if test="fields!=null">
+		<foreach item="field" index="idx" collection="fields" separator="," >
+			<foreach collection="values" index="idv" item="value">
+			<if test="idx==idv">
+				${field}=#{value}
+			</if>
+			</foreach>
+		</foreach>
+		   where code=#{code}
+	</if>
+	</update>
+</mapper> 

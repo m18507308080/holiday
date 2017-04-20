@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nothin.holiday.admin.dao.impl.AdministratorsDAOImplMapper">
+
+	<select id="selectAdministratorsByAttributes" parameterType="map" resultType="administrators">
+		SELECT ID
+			<if test="account != null">
+				 , ACCOUNT
+			</if>
+			<if test="password != null">
+				 , PASSWORD
+			</if>
+		 FROM	${table_name}
+		WHERE 	DELETED = 0 
+			<if test="account != null">
+				AND ACCOUNT = ${account}
+			</if>
+			<if test="password != null">
+				AND PASSWORD = ${password}
+			</if>
+    </select>
+    
+</mapper> 

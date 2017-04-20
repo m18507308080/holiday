@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	  http://www.springframework.org/schema/context
+	  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	  
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:mybatis/jdbc.properties</value>
+            </list>
+        </property>
+    </bean>
+	  
+	<!-- mysql -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${com.mysql.jdbc.driverClassName}" />
+		<property name="url" value="${com.mysql.jdbc.url}" />
+		<property name="username" value="${com.mysql.jdbc.username}" />
+		<property name="password" value="${com.mysql.jdbc.password}" />
+		<!-- 初始化连接 -->
+		<property name="initialSize" value="10"/>
+		<!-- 最大连接数 -->
+		<property name="maxActive" value="50"/> 
+		<!-- 最大空闲连接 -->
+		<property name="maxIdle" value="30"/> 
+		<!-- 最小空闲连接 -->
+		<property name="minIdle" value="15"/>
+		<!-- 是否自动回收超时连接 -->
+		<property name="removeAbandoned" value="true"/>  
+		<!-- 超时时间（以秒数为单位） -->
+		<property name="removeAbandonedTimeout" value="180"></property>
+		<!-- 超时等待时间以毫秒为单位6000毫秒/1000等于60秒 -->
+		<property name="maxWait" value="30000"></property>
+		<!-- 代表检查的sql -->
+		<property name="validationQuery">
+		 	<value>	SELECT 1 FROM dual</value>
+		</property>
+		<!-- 每次拿到connection先进行校验 -->
+		<property name="testOnBorrow" value="true"></property>
+	</bean>
+
+</beans>
